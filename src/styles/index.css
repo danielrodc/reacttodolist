@@ -1,3 +1,4 @@
+
 /* 
 
     You can write your own styles here...
@@ -10,20 +11,41 @@
 
 */
 
-ul {
-    list-style-type: none;
-  }
+body{ 
+  margin-top: 100px;
+  background-color: whitesmoke;
+}
+ul{ 
+  padding: 0;
+  margin-bottom:5px;
+}
+ul-li{
+  padding: 5px;
+}
+h1{
+  text-align:center;
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: x-large;
+}
+input{
+  border:none;
+  width:200px;
   
-  li {
-    border: 1px solid rgb(0, 0, 0);
-    border-radius: 5px;
-  }
-  
-  li:hover {
-    background-color: aliceblue;
-  }
-  
-  * {
-    font-family: "Times New Roman", Times, serif;
-  }
-  
+}
+.container{
+  background-color: white;
+  font-family: "Lucida Console", "Courier New", monospace;
+  padding: 25px;
+  width: 500px;
+  border-radius: 20px;
+}
+i{
+  font-size: xx-small;
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+li{
+  margin-bottom:10px;
+  list-style-type: "🐱";
+}
+

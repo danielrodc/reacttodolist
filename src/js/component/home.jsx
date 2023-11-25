@@ -1,132 +1,57 @@
-import React, { useEffect, useState } from "react";
-import TaskList from "./TaskList.jsx";
-import InputField from "./InputField.jsx";
-import TaskCounter from "./TaskCounter.jsx";
+import React, { useState } from "react";
 
-const URL = "https://assets.breatheco.de/apis/fake/todos/user";
-const USER = "jzangarinim";
-
-//create your first component
 const Home = () => {
-  const [task, setTask] = useState("");
-  const [todo, setTodo] = useState([]);
-  const [view, setView] = useState({ display: "none" });
-  const [count, setCount] = useState(0);
-  const getTask = async () => {
-    try {
-      let response = await fetch(`${URL}/${USER}`);
-      let data = await response.json();
-      if (response.status == 404) {
-        createUser();
-      } else {
-        setTodo(data);
-        setCount(data.length);
-      }
-    } catch (err) {
-      console.log(err);
+  const [inputValue, setInputValue] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      setTodos(todos.concat([inputValue]));
+      setInputValue("");
     }
   };
-  async function createUser() {
-    try {
-      let response = await fetch(`${URL}/${USER}`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify([]),
-      });
-      if (response.ok) {
-        getTask();
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  async function addTask() {
-    try {
-      let response = await fetch(`${URL}/${USER}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([
-          ...todo,
-          {
-            label: task,
-            done: false,
-          },
-        ]),
-      });
-      if (response.ok) {
-        getTask();
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  async function deleteUser() {
-    try {
-      let response = await fetch(`${URL}/${USER}`, {
-        method: "DELETE",
-      });
-      createUser();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  async function deleteTask(arr) {
-    try {
-      let response = await fetch(`${URL}/${USER}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([...arr]),
-      });
-      if (response.ok) {
-        setCount(count - 1);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  function handleSubmit(e) {
-    e.preventDefault();
-    setTodo([...todo, task]);
-    addTask();
-    getTask();
-    setTask("");
-    setCount(count + 1);
-  }
-  function handleDelete(e) {
-    let newArray = todo.filter(
-      (_, index) => index != e.target.parentElement.id
-    );
-    deleteTask(newArray);
-    setTodo(newArray);
-  }
-  useEffect(() => {
-    getTask();
-  }, []);
-  document.title = "Todo List: " + count;
+
+  const handleDeleteTodo = (index) => {
+    setTodos(todos.filter((t, currentIndex) => index !== currentIndex));
+  };
+
+  const handleDeleteAll = () => {
+    setTodos([]);
+  };
+
   return (
-    <>
-      <TaskCounter count={count} />
-
-      <InputField task={task} handleSubmit={handleSubmit} setTask={setTask} />
-
-      <TaskList
-        todo={todo}
-        view={view}
-        handleDelete={handleDelete}
-        setView={setView}
-      />
-
-      <button
-        className="col-1 m-auto mt-3 d-flex justify-content-center"
-        onClick={deleteUser}
-      >
-        Delete user
-      </button>
-    </>
+    <div className="container-flex">
+      <h1>My To-Do List</h1>
+      <div className="container">
+        <ul>
+          <li>
+            <input
+              type="text"
+              onChange={handleChange}
+              value={inputValue}
+              onKeyPress={handleKeyPress}
+              placeholder="Add your task here"
+            />
+          </li>
+          {todos.map((todo, index) => (
+            <li key={index}>
+              <span>{todo}</span>
+              <i
+                className="fas fa-trash-alt"
+                onClick={() => handleDeleteTodo(index)}
+              ></i>
+            </li>
+          ))}
+        </ul>
+        <div>Tasks: {todos.length}</div>
+        <button onClick={handleDeleteAll}>Delete all</button>
+      </div>
+    </div>
   );
 };
 
 export default Home;
-
